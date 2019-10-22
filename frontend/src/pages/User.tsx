@@ -8,7 +8,7 @@ const Form = styled.form`
     padding: 0;
 `;
 
-const InputContainer = styled.table`
+const InputContainer = styled.div`
     margin: 0;
     padding: auto;
 `;
@@ -25,7 +25,7 @@ export default
 class User extends React.Component<IUserProps, IUserState> {
     constructor(props: IUserProps) {
         super(props);
-        this.state = props;
+        this.state = { event: props.event };
     }
 
     handleSubmit(e: React.FormEvent<HTMLFormElement>): void {
@@ -56,7 +56,7 @@ class User extends React.Component<IUserProps, IUserState> {
                 <Container>
                     <Card>{{
                         header: 'Su nombre',
-                        rest:<><InputContainer><table>{ fields }</table></InputContainer><input type="submit" value="Submit"/></>
+                        rest:<><InputContainer><table><tbody>{ fields }</tbody></table></InputContainer><input type="submit" value="Submit"/></>
                     }}</Card>
                 </Container>
             </Form>
