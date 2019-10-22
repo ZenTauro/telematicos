@@ -34,7 +34,7 @@ class User extends React.Component<IUserProps, IUserState> {
         const values = [ 'name', 'password' ]
             .map((val, _) => ({key: val, value: document.getElementById(val) as unknown as {value: string}}));
         
-        if ( values[1].value.value != 'qwerty123') return;
+        if ( values[1].value.value !== 'qwerty123') return;
 
         localStorage.name = values[0].value.value;
     }

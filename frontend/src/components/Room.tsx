@@ -48,22 +48,22 @@ class Main extends React.Component<IRoomProps, IRoomState> {
         // ];
 
         const ctr = localStorage.getItem('country');
-        const country = ((ctr === null) || (ctr == '')) ? 
+        const country = ((ctr === null) || (ctr === '')) ?
             "Espanna" :
             ctr as unknown as string;
 
         const cty = localStorage.getItem('city');
-        const city = (cty === null || cty == '') ?
+        const city = (cty === null || cty === '') ?
             "Alcala de Henares" :
             cty as unknown as string;
 
         const lcl = localStorage.getItem('coords');
-        const localization = (lcl === null || lcl == '') ?
+        const localization = (lcl === null || lcl === '') ?
             "41.51, -3.34" :
             lcl as unknown as string;
 
         const lnk = localStorage.getItem('link');
-        const link = (lnk === null || lnk == '') ?
+        const link = (lnk === null || lnk === '') ?
             "maps.google.com" :
             lnk as unknown as string;
 
@@ -75,7 +75,7 @@ class Main extends React.Component<IRoomProps, IRoomState> {
     render() {
         const room = this.state;
         const list = zip(Object.keys(room), Object.values(room))
-                        .filter((val, _,) => (val[0] != 'image'))
+                        .filter((val, _,) => (val[0] !== 'image'))
                         .map((val, _) => ( <DataElement key={val[0]}> {cap1(val[0])}: { val[1] } </DataElement>));
         return (
             <Card>{{
