@@ -95,7 +95,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
             <tr key={val.formName}><td>{val.displayName}</td><td><input type="number" id={val.formName} min={val.min} max={val.max} /></td></tr>
         ));
         room_alerts.push(
-            <tr><td rowSpan={2}><input type="submit" value="Submit" /></td></tr>
+            <tr key="submit"><td rowSpan={2}><input type="submit" value="Submit" /></td></tr>
         );
 
         return (
