@@ -19,11 +19,31 @@ const ColNumberInput = styled.input<{color: string} >`
     background-color: ${p => p.color}
 `;
 
+const Gauge = styled.meter<{color: string}>`
+    color: none;
+    color: ${p => p.color};
+    background: none;
+    background-color: ${p => p.color};
+    width: 17em;
+`;
+
+function Progress(props: {val: number}): JSX.Element {
+    const val = props.val < 10 ? props.val : 10;
+    var color: string = 'none';
+    if ( val <  4 ) color = 'red'    ; else {
+    if ( val <  6 ) color = 'orange' ; else {
+    if ( val <  8 ) color = 'yellow' ; else {
+    if ( val >= 8 ) color = 'green'  ; }}}
+
+    return <Gauge color={color} value={val} min={0} max={10} />
+}
+
 interface IConfigProps { }
 
 interface IConfigState {
     isMaxOk: boolean,
     isMinOk: boolean,
+    passlen: number,
 }
 
 export default
@@ -34,6 +54,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
         this.state = {
             isMaxOk: true,
             isMinOk: true,
+            passlen: 0,
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -66,6 +87,11 @@ class Config extends React.Component<IConfigProps, IConfigState> {
             return;
         }
 
+        if (  Number(ids[10].element.value) < 22 || Number(ids[10].element.value) > 26
+           || Number(ids[11].element.value) < 22 || Number(ids[11].element.value) > 26 ) {
+            window.alert("Invalid temperature range");
+        }
+
         if ( ids[1].element.value !== 'qwerty123' ) {
             console.log(ids[1].element.value)
             console.log("Incorrect password");
@@ -89,36 +115,23 @@ class Config extends React.Component<IConfigProps, IConfigState> {
             element: document.getElementById(id) as unknown as {valueAsNumber: number | null}
         }));
 
+        const passlen = (document.getElementById('password') as any).value.length as unknown as number;
+
+        this.setState({passlen});
+
         const minVal: number = ids[1].element.valueAsNumber ? ids[1].element.valueAsNumber : 23;
         const maxVal: number = ids[0].element.valueAsNumber ? ids[0].element.valueAsNumber : 23;
 
-        var isMax = this.state.isMaxOk;
-        var isMin = this.state.isMinOk;
-
         if (minVal < 22 || minVal > 26) {
-            isMin = false;
-            this.setState({
-                isMaxOk: isMax,
-                isMinOk: false,
-            })
+            this.setState({ isMinOk: false, })
         } else {
-            isMin = true;
-            this.setState({
-                isMaxOk: isMax,
-                isMinOk: true,
-            })
+            this.setState({ isMinOk: true, })
         }
 
         if (maxVal < 22 || maxVal > 26) {
-            this.setState({
-                isMinOk: isMin,
-                isMaxOk: false,
-            })
+            this.setState({ isMaxOk: false, })
         } else {
-            this.setState({
-                isMinOk: isMin,
-                isMaxOk: true,
-            })
+            this.setState({ isMaxOk: true, })
         }
     }
 
@@ -133,7 +146,8 @@ class Config extends React.Component<IConfigProps, IConfigState> {
         ));
         room_data.push(
             <tr key="file"><td>Foto</td><td><input type="file" id="photo" /></td></tr>,
-            <tr key="password"><td>Password</td><td><input type="password" id="password" /></td></tr>
+            <tr key="password"><td>Password</td><td><input type="password" id="password" /></td></tr>,
+            <tr key="progress"><td colSpan={2}><Progress val={this.state.passlen}/></td></tr>
         )
 
         const room_sensors: JSX.Element[] = [

@@ -13,28 +13,61 @@ const InputContainer = styled.div`
     padding: auto;
 `;
 
+const VariableBg = styled.input<{color: string}>`
+    background-color: ${p => p.color};
+`;
+
+function MailInput(props: {isValid: boolean, id: string}): JSX.Element {
+    const color = props.isValid ? '#c3f733' : '#f7b933';
+
+    return <VariableBg color={color} type="text" id={props.id} />
+}
+
 interface IUserProps { 
     event: any
 }
 
 interface IUserState {
-    event: any
+    event: any,
+    isValidMail: boolean,
 }
 
 export default
 class User extends React.Component<IUserProps, IUserState> {
     constructor(props: IUserProps) {
         super(props);
-        this.state = { event: props.event };
+        this.state = {
+            event: props.event,
+            isValidMail: true,
+        };
+
+        this.handleChange = this.handleChange.bind(this);
     }
 
     handleSubmit(e: React.FormEvent<HTMLFormElement>): void {
         e.preventDefault();
 
-        const values = [ 'name', 'password' ]
+        const values = [ 'name', 'password', 'mail' ]
             .map((val, _) => ({key: val, value: document.getElementById(val) as unknown as {value: string}}));
         
         if ( values[1].value.value !== 'qwerty123') return;
+
+        localStorage.name = values[0].value.value;
+    }
+
+    handleChange(): void {
+        const values = [ 'mail' ]
+            .map((val, _) => ({key: val, value: document.getElementById(val) as unknown as {value: string}}));
+
+        if ( values[0].value.value
+            .match(
+                /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            )
+        ) {
+            this.setState({ isValidMail: true });
+        } else {
+            this.setState({ isValidMail: false });
+        }
 
         localStorage.name = values[0].value.value;
     }
@@ -46,13 +79,18 @@ class User extends React.Component<IUserProps, IUserState> {
             <tr key={val.formName}><td>{val.displayName}</td><td><input type="text" id={val.formName} /></td></tr>
         ));
         fields.push(
+            [{ displayName: 'Email', formName: 'mail' }].map((val) => (
+                <tr key={val.formName}><td>{val.displayName}</td><td><MailInput isValid={this.state.isValidMail} id={val.formName} /></td></tr>
+            ))[0]
+        )
+        fields.push(
             [{ displayName: 'Contraseña', formName: 'password' }].map((val) => (
                 <tr key={val.formName}><td>{val.displayName}</td><td><input type="password" id={val.formName} /></td></tr>
             ))[0]
         )
 
         return (
-            <Form onSubmit={this.handleSubmit}>
+            <Form onSubmit={this.handleSubmit} onChange={this.handleChange}>
                 <Container>
                     <Card>{{
                         header: 'Su nombre',
