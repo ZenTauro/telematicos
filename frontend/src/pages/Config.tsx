@@ -3,7 +3,7 @@ import Container from '../components/Container';
 import Card from '../components/Card';
 import styled from 'styled-components';
 import { countries } from '../utils/countries';
-import { cap1 } from '../utils/funcs';
+import { cap1, coords2maps } from '../utils/funcs';
 
 const Form = styled.form`
     margin: 0;
@@ -79,6 +79,9 @@ class Config extends React.Component<IConfigProps, IConfigState> {
         ].map((id, _) => ({ id, element: document.getElementById(id) as unknown as {value: string} }));
         const country = cap1( ids[0].element.value.toLowerCase() );
         const isCountry = !countries.includes(country);
+        const coords = coords2maps( ids[3].element.value );
+
+        ids[3].element.value = `https://www.google.com/maps/@${coords.latitude},${coords.longitude},14z`;
 
         if (isCountry) { 
             window.alert(`${country} is not a valid country`);

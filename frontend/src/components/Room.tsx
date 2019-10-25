@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import Card from '../components/Card';
 import { cap1, zip } from '../utils/funcs';
 
+const room_image = require("../assets/room.jpg");
+
 const DataList = styled.ul`
     margin: 0;
     padding: 0;
@@ -67,7 +69,7 @@ class Main extends React.Component<IRoomProps, IRoomState> {
             "maps.google.com" :
             lnk as unknown as string;
 
-        const image = "https://d2felfhvpayf79.cloudfront.net/media/images/properties/singapore/singapore/mandarin-orchard-singapore/rooms-and-suites/premier-room/mos_2013_maintowerpremierroom_twinbed_501_1200x800.jpg";
+        const image = room_image;
 
         this.state = { country, city, localization, link, image }
     }
@@ -75,8 +77,10 @@ class Main extends React.Component<IRoomProps, IRoomState> {
     render() {
         const room = this.state;
         const list = zip(Object.keys(room), Object.values(room))
-                        .filter((val, _,) => (val[0] !== 'image'))
+                        .filter((val, _,) => (val[0] !== 'image' && val[0] !== 'localization'))
                         .map((val, _) => ( <DataElement key={val[0]}> {cap1(val[0])}: { val[1] } </DataElement>));
+
+        list.push(<DataElement key="localization"><a href={this.state.localization}>Map link</a></DataElement>)
         return (
             <Card>{{
                 header: "Datos de la Habitacion",
