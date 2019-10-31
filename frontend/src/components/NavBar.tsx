@@ -92,6 +92,7 @@ class NavBar extends React.Component<{}, {name: string}> {
   render() {
     const links = [
       { name: 'Home',     dir: '/' },
+      { name: 'Gallery', dir: '/gallery' },
       { name: 'Config',   dir: '/config' },
       { name: 'Personal', dir: '/myspace' },
     ];

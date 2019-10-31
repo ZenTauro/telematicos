@@ -1,0 +1,33 @@
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  transition-property: opacity;
+  transition-duration: 400ms;
+
+  visibility: hidden;
+  opacity: 0;
+  text-align: center;
+  max-width: 20em;
+  padding: 0.5em;
+
+  background-color: black;
+  color: white;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  /* top: 50%; */
+  /* transform: translateY(-50%); */
+ 
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}

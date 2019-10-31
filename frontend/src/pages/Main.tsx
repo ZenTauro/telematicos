@@ -10,7 +10,7 @@ const H1 = styled.h1`
 
 interface IMainProps { }
 
-interface IMainState { 
+interface IMainState {
 }
 
 export default
