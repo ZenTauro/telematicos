@@ -11,48 +11,37 @@ interface City {
 
 interface ITableProps {
     pages: City[][],
-}
-
-interface ITableState {
-    page: number,
+    selected: number,
 }
 
 export default
-class TableContainer extends React.Component<ITableProps, ITableState> {
-    constructor(props: ITableProps) {
-        super(props);
-        this.state = {
-            page: 0,
-        }
-    }
+function TableContainer(props: ITableProps) {
+    const selection = props.pages[props.selected].map((val) => (
+        <tr key={ val.name }>
+            <td>{ val.name }</td>
+            <td>{ val.temperature }</td>
+            <td>{ val.humidity }</td>
+            <td>{ val.noise }</td>
+            <td>{ val.light_level }</td>
+            <td>{ val.color }</td>
+        </tr>
+    ));
 
-    render() {
-        const selection = this.props.pages[this.state.page].map((val) => (
-            <tr key={ val.name }>
-                <td>{ val.name }</td>
-                <td>{ val.temperature }</td>
-                <td>{ val.humidity }</td>
-                <td>{ val.noise }</td>
-                <td>{ val.light_level }</td>
-                <td>{ val.color }</td>
-            </tr>
-        ));
-        return(
-            <table>
-                <thead>
-                    <tr>
-                        <td>Ciudad</td>
-                        <td>Temperatura</td>
-                        <td>Humedad</td>
-                        <td>Ruido</td>
-                        <td>Nivel de Luz</td>
-                        <td>Color de Iluminacion</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    { selection }
-                </tbody>
-            </table>
-        )
-    }
+    return(
+        <table>
+            <thead>
+                <tr>
+                    <td>Ciudad</td>
+                    <td>Temperatura</td>
+                    <td>Humedad</td>
+                    <td>Ruido</td>
+                    <td>Nivel de Luz</td>
+                    <td>Color de Iluminacion</td>
+                </tr>
+            </thead>
+            <tbody>
+                { selection }
+            </tbody>
+        </table>
+    )
 }
