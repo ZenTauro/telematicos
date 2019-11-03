@@ -3,6 +3,8 @@ import Images from '../components/Images';
 import styled from 'styled-components';
 import Card from '../components/Card';
 
+import $ from 'jquery';
+
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { colors } from '../config/colors';
 import TableContainer from '../components/PaginatedTable';
@@ -36,6 +38,20 @@ class Tables extends React.Component<ITablesProps, ITablesState> {
         this.setState({
             selected: num,
         });
+    }
+
+    componentDidMount() {
+        $('.even-row')
+            .css('background-color', colors["brand-lighter"]);
+        $('.odd-row')
+            .css('background-color', colors["grey-dark"]);
+    }
+
+    componentDidUpdate() {
+        $('.even-row')
+            .css('background-color', colors["brand-lighter"]);
+        $('.odd-row')
+            .css('background-color', colors["grey-dark"]);
     }
 
     render() {

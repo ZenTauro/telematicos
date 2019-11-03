@@ -16,8 +16,8 @@ interface ITableProps {
 
 export default
 function TableContainer(props: ITableProps) {
-    const selection = props.pages[props.selected].map((val) => (
-        <tr key={ val.name }>
+    const selection = props.pages[props.selected].map((val, idx) => (
+        <tr className={idx % 2 == 0 ? 'odd-row' : 'even-row'} key={ val.name }>
             <td>{ val.name }</td>
             <td>{ val.temperature }</td>
             <td>{ val.humidity }</td>
