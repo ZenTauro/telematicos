@@ -5,6 +5,13 @@ import styled from 'styled-components';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { colors } from '../config/colors';
 
+const image1 = require('../assets/gallery/image1.jpg');
+const pizzaguy = require('../assets/gallery/pizzaguy.jpg');
+const worker = require('../assets/gallery/worker.jpg');
+const pizzagirl = require('../assets/gallery/pizzagirl.jpg');
+const ambulance = require('../assets/gallery/ambulance.jpg');
+const image6 = require('../assets/gallery/image6.jpg');
+
 const ImageContainer = styled.div`
     display: flex;
     flex-flow: row wrap;
@@ -50,27 +57,27 @@ class Gallery extends React.Component<IGalleryProps, IGalleryState> {
     num_imgs = 5;
     imgs = [
         {
-            url: 'https://media.breitbart.com/media/2015/03/unfinishedbusiness-Vince-Vaughn-trailor.jpg',
+            url: image1,
             info: 'Image 1'
         },
         {
-            url: 'https://edit.co.uk/uploads/2016/12/Image-2-Alternatives-to-stock-photography-Thinkstock.jpg',
+            url: pizzaguy,
             info: 'Image 2 - pizza guy'
         },
         {
-            url: 'https://timedotcom.files.wordpress.com/2017/02/170206_badstock_15.jpg',
+            url: worker,
             info: 'Image 3 - worker'
         },
         {
-            url: 'https://uploads.neatorama.com/images/posts/592/95/95592/1491047764-3.jpg',
+            url: pizzagirl,
             info: 'Image 4 - Pizza girl'
         },
         {
-            url: 'https://thumbs.dreamstime.com/z/paramedic-using-cb-radio-29660006.jpg',
+            url: ambulance,
             info: 'Image 5 - Ambulance'
         },
         {
-            url: 'https://static01.nyt.com/images/2010/01/15/arts/design/15stockimg/popup.jpg',
+            url: image6,
             info: 'Image 6'
         },
     ];

@@ -1,11 +1,9 @@
 import React  from 'react';
-import Images from '../components/Images';
 import styled from 'styled-components';
 import Card from '../components/Card';
 
 import $ from 'jquery';
 
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { colors } from '../config/colors';
 import TableContainer from '../components/PaginatedTable';
 
