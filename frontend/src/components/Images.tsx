@@ -28,7 +28,7 @@ export default
 */
 function Images(props: IImageProps) {
     const images = props.images.map((val, idx) => (
-        <div className="tooltip">
+        <div className="tooltip" key={idx}>
             <Img src={val.url} key={idx} onClick={() => {
                 props.clickFn(idx);
             }} />

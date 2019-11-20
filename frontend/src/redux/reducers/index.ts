@@ -1,12 +1,9 @@
-import { UPDATE_USER, Action } from '../Actions';
-import { IStoreState } from '../Store';
+import { combineReducers } from 'redux';
 
-export
-function username(state: IStoreState = { username: 'anon' }, action: Action): IStoreState {
-    switch (action.type) {
-        case UPDATE_USER:
-            return { ...state, username: action.payload };
-        default:
-            return state;
-    }
-}
+import username from './usernameReducer';
+
+const rootReducer = combineReducers({
+    username: username
+});
+
+export default rootReducer;

@@ -4,6 +4,7 @@ import Card from '../components/Card';
 import styled from 'styled-components';
 import { countries } from '../utils/countries';
 import { cap1, coords2maps } from '../utils/funcs';
+import $ from "jquery";
 
 const Form = styled.form`
     margin: 0;
@@ -44,6 +45,11 @@ interface IConfigState {
     isMaxOk: boolean,
     isMinOk: boolean,
     passlen: number,
+    cities: string[],
+}
+
+function getCountry(): string {
+    return (document.getElementById('country') as unknown as {value: string}).value;
 }
 
 export default
@@ -55,9 +61,11 @@ class Config extends React.Component<IConfigProps, IConfigState> {
             isMaxOk: true,
             isMinOk: true,
             passlen: 0,
+            cities: [],
         };
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleCountryBlur = this.handleCountryBlur.bind(this);
     }
 
     handleSubmit(e: React.FormEvent<HTMLFormElement>): void {
@@ -138,10 +146,24 @@ class Config extends React.Component<IConfigProps, IConfigState> {
         }
     }
 
+    handleCountryBlur() {
+        console.log("Response");
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/api/0.1/cities.xml');
+        xhr.onreadystatechange = () => {
+            const val = $($.parseXML(xhr.responseText)).find(getCountry()).toArray().map(
+                (e) => (e.textContent) as string
+            );
+            console.log(`state: ${xhr.readyState}, status: ${xhr.status}. response: "${val}"`);
+            console.log(val);
+            this.setState({ ...this.state, cities: val });
+        };
+
+        xhr.send();
+    }
+
     render() {
         const room_data: JSX.Element[] = [
-            { displayName: 'Pais',        formName: 'country' },
-            { displayName: 'Ciudad',      formName: 'city'    },
             { displayName: 'Coordenadas', formName: 'coords'  },
             { displayName: 'Link',        formName: 'link'    },
         ].map((val, _) => ( 
@@ -151,7 +173,17 @@ class Config extends React.Component<IConfigProps, IConfigState> {
             <tr key="file"><td>Foto</td><td><input type="file" id="photo" /></td></tr>,
             <tr key="password"><td>Password</td><td><input type="password" id="password" /></td></tr>,
             <tr key="progress"><td colSpan={2}><Progress val={this.state.passlen}/></td></tr>
-        )
+        );
+        room_data.unshift(
+            <tr key="country"><td>Pais</td><td><input type="text" name="country" id="country" onBlur={this.handleCountryBlur}/></td></tr>,
+            <tr key="city"><td>Ciudad</td>
+                <td><select name="city" id="city" key="city">
+                    {this.state.cities.map((val) => (
+                        <option value={val} key={val}>{val}</option>
+                    ))}
+                </select></td>
+            </tr>,
+        );
 
         const room_sensors: JSX.Element[] = [
             { displayName: 'Temperatura',     formName: 'isTempActive'     },

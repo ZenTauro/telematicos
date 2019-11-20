@@ -33,7 +33,7 @@ export function coords2maps(coords: string): ICoord {
 
 export function isMail(addr: string): boolean {
     const name_domain = addr.split('@');
-    if (name_domain.length != 2) return false;
+    if (name_domain.length !== 2) return false;
 
     const name = name_domain[0];
     const domain = name_domain[1];

@@ -49,7 +49,6 @@ const Btn = styled.button`
 interface IGalleryProps { }
 interface IGalleryState {
     index: number;
-    which: number;
 }
 
 export default
@@ -86,8 +85,7 @@ class Gallery extends React.Component<IGalleryProps, IGalleryState> {
         super(props);
 
         this.state = {
-            index: 0,
-            which: 0,
+            index: 0
         }
 
         this.handleBackward = this.handleBackward.bind(this);
@@ -96,37 +94,46 @@ class Gallery extends React.Component<IGalleryProps, IGalleryState> {
     }
 
     handleForward(): void {
-        if( (this.state.index+1) * this.num_imgs >= this.imgs.length) {
-            return;
-        }
+        const index = this.state.index + 1 > this.num_imgs ?
+            this.num_imgs :
+            this.state.index + 1;
 
-        this.setState({index: this.state.index + 1, which: 0})
+        this.setState({ index })
     }
 
     handleBackward(): void {
-        if( this.state.index <= 0 ) {
-            return;
-        }
+        const index = this.state.index - 1 < 0 ?
+            0 :
+            this.state.index - 1;
 
-        this.setState({index: this.state.index - 1, which: 0})
+        this.setState({ index })
     }
 
-    handleSelection(which: number) {
-        this.setState({which});
+    handleSelection(index: number) {
+        this.setState({ index });
     }
 
     render() {
-        const from = this.state.index * this.num_imgs;
-        const to = (this.state.index + 1) * this.num_imgs < this.imgs.length ?
-            (this.state.index + 1) * this.num_imgs :
-            this.imgs.length;
+        var from = 0;
+        var to = 0;
+
+        if (this.state.index < 2) {
+            from = 0;
+            to = this.num_imgs;
+        } else if (this.state.index > this.num_imgs - 2) {
+            from = this.imgs.length - this.num_imgs;
+            to = this.imgs.length;
+        } else {
+            from = this.state.index - 2;
+            to = this.state.index + 2;
+        }
 
         const to_render = this.imgs.slice(from, to);
 
         return <GalleryViewer>
             <RenderContainer>
                 <Btn onClick={this.handleBackward}><FaArrowLeft /></Btn>
-                <RenderedImage src={to_render[this.state.which].url} />
+                <RenderedImage src={this.imgs[this.state.index].url} />
                 <Btn onClick={this.handleForward}><FaArrowRight /></Btn>
             </RenderContainer>
             <ImageContainer>
