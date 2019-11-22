@@ -2,6 +2,9 @@ import React from 'react';
 import Container from '../components/Container';
 import Card from '../components/Card';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
+import { IStoreState } from '../redux/Store';
+import { updateUser } from '../redux/Actions';
 
 const Form = styled.form`
     margin: 0;
@@ -24,7 +27,8 @@ function MailInput(props: {isValid: boolean, id: string}): JSX.Element {
 }
 
 interface IUserProps { 
-    event: any
+    event: any,
+    dispatch: (_:any) => any,
 }
 
 interface IUserState {
@@ -32,7 +36,6 @@ interface IUserState {
     isValidMail: boolean,
 }
 
-export default
 class User extends React.Component<IUserProps, IUserState> {
     constructor(props: IUserProps) {
         super(props);
@@ -42,6 +45,7 @@ class User extends React.Component<IUserProps, IUserState> {
         };
 
         this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleSubmit(e: React.FormEvent<HTMLFormElement>): void {
@@ -53,6 +57,7 @@ class User extends React.Component<IUserProps, IUserState> {
         if ( values[1].value.value !== 'qwerty123') return;
 
         localStorage.name = values[0].value.value;
+        this.props.dispatch(updateUser(values[0].value.value));
     }
 
     handleChange(): void {
@@ -68,8 +73,6 @@ class User extends React.Component<IUserProps, IUserState> {
         } else {
             this.setState({ isValidMail: false });
         }
-
-        localStorage.name = values[0].value.value;
     }
 
     render() {
@@ -101,3 +104,7 @@ class User extends React.Component<IUserProps, IUserState> {
         )
     }
 }
+
+const mapStateToProps = (state: IStoreState) => ({});
+
+export default connect(mapStateToProps)(User);

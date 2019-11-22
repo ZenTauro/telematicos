@@ -6,11 +6,13 @@ const initialState = {};
 
 const middleware = [thunk];
 
-export interface IStoreState {
+export
+interface IStoreState {
     username: string
 }
 
-export const store = createStore(
+export
+const store = createStore(
     rootReducer,
     initialState,
     applyMiddleware(...middleware)

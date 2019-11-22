@@ -15,7 +15,6 @@ interface IMainState {
 
 export default
 class Main extends React.Component<IMainProps, IMainState> {
-
     render() {
         return (<>
             <H1>Smart Room Project</H1>

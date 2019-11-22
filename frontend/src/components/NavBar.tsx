@@ -2,6 +2,8 @@ import React, { ReactElement } from 'react';
 import styled from 'styled-components';
 import { colors } from '../config/colors';
 import {  Link as RRLink } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { IStoreState } from '../redux/Store';
 
 const Nav = styled.nav`
   display: flex;
@@ -61,54 +63,37 @@ const Welcome = styled.p`
   margin: 0;
 `;
 
+const mapStateToProps = (state: IStoreState) => ({ name: state.username });
+
 function Message(props: IMessageProps): ReactElement {
   return (
     <Welcome> {`Bienvenido ${props.name}`} </Welcome>
   )
 }
 
-export default
-class NavBar extends React.Component<{}, {name: string}> {
-  constructor(props: {}) {
-    super(props);
-    const maybeName = localStorage.getItem('name');
-    const name = maybeName ? maybeName : 'Anonimo';
+const NavBar: React.FC<{name: string}> = ({name}) => {
+  const links = [
+    { name: 'Home',     dir: '/' },
+    { name: 'Gallery',  dir: '/gallery' },
+    { name: 'Tables',   dir: '/tables' },
+    { name: 'Config',   dir: '/config' },
+    { name: 'Personal', dir: '/myspace' },
+  ];
 
-    this.state = { name };
-  }
+  console.log(name);
 
-  handleStorageUpdate() {
-    const maybeName = localStorage.getItem('name');
-    const name = maybeName ? maybeName : 'Anonimo';
-
-    this.setState({name})
-    console.log('Storage Update')
-  }
-
-  componentDidMount() {
-    window.addEventListener('onStorageChange', this.handleStorageUpdate);
-  }
-
-  render() {
-    const links = [
-      { name: 'Home',     dir: '/' },
-      { name: 'Gallery',  dir: '/gallery' },
-      { name: 'Tables',   dir: '/tables' },
-      { name: 'Config',   dir: '/config' },
-      { name: 'Personal', dir: '/myspace' },
-    ];
-
-    return (
-      <Nav>
-        <Links>
-        {
-          links.map(
-            link => { return <MenuItem link={link} key={link.name} /> }
-          )
-        }
-        </Links>
-        <Message name={this.state.name} />
-      </Nav>
-    )
-  }
+  return (
+    <Nav>
+      <Links>
+      {
+        links.map(
+          link => { return <MenuItem link={link} key={link.name} /> }
+        )
+      }
+      </Links>
+      <Message name={ name } />
+    </Nav>
+  )
 }
+
+export default connect(mapStateToProps)(NavBar);

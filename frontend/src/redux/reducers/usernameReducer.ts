@@ -1,13 +1,14 @@
-import { UPDATE_USER, Action } from '../Actions';
+import { ActionTypes, Action } from '../Actions';
 import { IStoreState } from '../Store';
 
-// const initialState = { username: 'anon' };
+const init_name: string = localStorage.name;
 
 export default
-function username(state: IStoreState = { username: 'anon' }, action: Action): IStoreState {
+function username(state: string = init_name, action: Action): string {
     switch (action.type) {
-        case UPDATE_USER:
-            return { ...state, username: action.payload };
+        case ActionTypes.UPDATE_USER:
+            console.log(`Dispatching action UPDATE_USER ${username} => ${action.payload}`);
+            return action.payload;
         default:
             return state;
     }
