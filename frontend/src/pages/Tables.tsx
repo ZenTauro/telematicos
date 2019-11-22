@@ -69,7 +69,10 @@ class Tables extends React.Component<ITablesProps, ITablesState> {
     }
 
     componentDidMount() {
-        $.getJSON("/api/0.1/")
+        $.getJSON("/api/0.1/tables.json").done((res) => {
+            console.log(res);
+            this.setState({...res});
+        });
 
         $('.even-row')
             .css('background-color', colors["brand-lighter"]);
