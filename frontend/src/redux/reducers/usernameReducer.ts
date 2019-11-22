@@ -1,5 +1,4 @@
 import { ActionTypes, Action } from '../Actions';
-import { IStoreState } from '../Store';
 
 const init_name: string = localStorage.name;
 

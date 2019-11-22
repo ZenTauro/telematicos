@@ -6,7 +6,6 @@ import { countries } from '../utils/countries';
 import { cap1, coords2maps } from '../utils/funcs';
 import $ from "jquery";
 import { updateUser } from '../redux/Actions';
-import { validate } from '@babel/types';
 
 const Form = styled.form`
     margin: 0;

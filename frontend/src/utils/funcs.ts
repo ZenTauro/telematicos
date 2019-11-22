@@ -38,8 +38,8 @@ export function isMail(addr: string): boolean {
     const name = name_domain[0];
     const domain = name_domain[1];
 
-    if (!name.match(/[\w\.]+\w/))    return false;
-    if (!domain.match(/[\w\.]+\.\w+/)) return false;
+    if (!name.match(/[\w.]+\w/))    return false;
+    if (!domain.match(/[\w.]+\.\w+/)) return false;
 
     return true;
 }

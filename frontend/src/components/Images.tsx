@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const imcss = require('./Images.css');
+require('./Images.css');
 
 type ClickFn = (n: number) => void;
 

@@ -93,7 +93,7 @@ class Tables extends React.Component<ITablesProps, ITablesState> {
 
         return <div>
             <Card>{{
-                header: <h1>Tabla</h1>,
+                header: "Tabla",
                 rest: <>
                     <TableContainer pages={ this.state.tables } selected={ this.state.selected } />
                     <PaginationContainer className='pagination'>
