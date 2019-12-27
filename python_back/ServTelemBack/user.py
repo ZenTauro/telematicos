@@ -1,17 +1,14 @@
-import jwt
 from json import JSONEncoder
 import logging
+import jwt
 
 class User(JSONEncoder):
     name = None
     password = None
     token = None
 
-    def default(self):
-        if isinstance(self, User):
-            return {'name': self.name, 'token': self.token}
-        else:
-            return JSONEncoder.default(self)
+    def as_json(self):
+        return {'name': self.name, 'token': self.token}
 
     def login(self):
         db_user_pass = '' # db.lookup_user(user)
@@ -21,5 +18,5 @@ class User(JSONEncoder):
         else:
             logging.info(f'User \'{self.name}\' failed to log in')
 
-    def logout(token: str):
+    def logout(self):
         logging.info(f'User \'{self.name}\' logged out')

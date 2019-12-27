@@ -14,7 +14,7 @@ def login():
             usr.name = login_obj["name"]
             usr.password = login_obj["pass"]
             usr.login()
-            ret = json.dumps({'ok': usr.default()})
+            ret = json.dumps({'ok': usr.as_json()})
         except:
             ret = json.dumps({'err':
                               "expected fields name and pass to be set"})
@@ -22,7 +22,7 @@ def login():
     return ret
 
 
-@app.route('/api/user/logout')
+@app.route('/api/user/logout', methods=['POST'])
 def logout():
     ret = json.dumps({'err': "JSON was expected"})
     login_obj = request.get_json()
@@ -32,7 +32,7 @@ def logout():
             usr.name = login_obj["name"]
             usr.token = login_obj["token"]
             usr.logout()
-            ret = json.dumps({'ok': 'ok'})
+            ret = json.dumps({'ok': 'logout'})
         except:
             ret = json.dumps({'err':
                               "expected fields name and pass to be set"})
