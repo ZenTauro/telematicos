@@ -23,6 +23,8 @@ setup(
     install_requires=[
         'flask',
         'urllib3',
+        'redis',
+        'jwt',
         'mysql-connector',
     ]
 )
