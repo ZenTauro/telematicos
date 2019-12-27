@@ -24,7 +24,7 @@ setup(
         'flask',
         'urllib3',
         'redis',
-        'jwt',
+        'Authlib',
         'mysql-connector',
     ]
 )
