@@ -25,6 +25,10 @@ setup(
         'urllib3',
         'redis',
         'Authlib',
+        'psycopg2',
+        'sqlalchemy-migrate',
+        'ipython==7.11.0',
+        'ipdb==0.12.3',
         'mysql-connector',
         'sqlalchemy',
     ]
