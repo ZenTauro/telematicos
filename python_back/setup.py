@@ -27,6 +27,7 @@ setup(
         'Authlib',
         'psycopg2',
         'sqlalchemy-migrate',
+        'passlib',
         'ipython==7.11.0',
         'ipdb==0.12.3',
         'mysql-connector',

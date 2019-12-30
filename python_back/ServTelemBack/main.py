@@ -1,6 +1,7 @@
+from ServTelemBack import user
+
 from flask import Flask, escape, request
 import json
-import user
 
 app = Flask(__name__)
 
