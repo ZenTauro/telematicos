@@ -1,6 +1,8 @@
 from ServTelemBack.session_manager import SessionManager
 from ServTelemBack.db_manager import DBManager
 
+from passlib.hash import argon2
+from base64 import b64decode
 from datetime import datetime, timedelta
 from calendar import timegm
 from uuid import uuid4
@@ -16,13 +18,15 @@ class User():
     def as_json(self):
         return {'name': self.name, 'token': self.token.decode("utf-8")}
 
-    def register(self, username: str) -> bool:
-        salt = urandom(512)
-        pass
+    def signup(self) -> bool:
+        salt = urandom(60)
+        self.db_manager.create_user(self.name, self.password, salt)
+        return True
 
     def login(self) -> bool:
-        db_user_pass = '' # db.lookup_user(user)
-        if db_user_pass == self.password:
+        (db_user_hash, salt) = self.db_manager.get_user(self.name)
+        is_equal = argon2.verify(self.password, db_user_hash)
+        if is_equal:
             self.token = self.session_mgr.generate(self.name, \
                 str(uuid4()), \
                 timegm((datetime.now() + timedelta(days=1)).utctimetuple()))

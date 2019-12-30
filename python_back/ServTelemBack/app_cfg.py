@@ -19,14 +19,10 @@ class ConfigObj:
         except KeyError:
             db_name = self.options['database']['db_name']
 
-        print(f'db_name is {db_name}')
-
         try:
             username = environ['DB_USER']
         except KeyError:
             username = self.options['database']['db_username']
-
-        print(f'db_username is {username}')
 
         try:
             db_pass = environ['DB_PASS']
@@ -39,8 +35,6 @@ class ConfigObj:
         finally:
             login = f'{username}:{db_pass}'
 
-        print(f'login is {login}')
-
         try:
             db_addr = environ['DB_ADDR']
         except KeyError:
@@ -49,8 +43,6 @@ class ConfigObj:
             else:
                 db_addr = self.options['database']['db_addr']
 
-        print(f'db_addr is {db_addr}')
-
         try:
             db_port = environ['DB_PORT']
         except KeyError:
@@ -58,8 +50,6 @@ class ConfigObj:
                 db_port = 5432
             else:
                 db_port = self.options['database']['db_port']
-
-        print(f'db_port is {db_port}')
 
         self.db_addr = f'postgresql://{login}@{db_addr}:{db_port}/{db_name}'
 

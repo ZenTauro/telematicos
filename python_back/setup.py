@@ -28,6 +28,7 @@ setup(
         'psycopg2',
         'sqlalchemy-migrate',
         'passlib',
+        'argon2-cffi',
         'ipython==7.11.0',
         'ipdb==0.12.3',
         'mysql-connector',

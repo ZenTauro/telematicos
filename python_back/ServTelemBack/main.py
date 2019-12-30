@@ -1,5 +1,6 @@
 from ServTelemBack import user
 
+from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from flask import Flask, escape, request
 import json
 
@@ -64,6 +65,33 @@ def validate():
             else:
                 ret = json.dumps({'err': 'invalid session'})
                 app.logger.info(f'Session for \'{usr.name}\' failed to validate')
+        except KeyError:
+            ret = json.dumps({'err':
+                              "expected fields name and pass to be set"})
+
+    return ret
+
+@app.route('/api/user/signup', methods=['POST'])
+def sign_up():
+    ret = json.dumps({'err': "JSON was expected"})
+    login_obj = request.get_json()
+    if login_obj is not None:
+        usr = user.User()
+        try:
+            usr.name = login_obj["name"]
+            usr.password = login_obj["pass"]
+            try:
+                usr.signup()
+                usr.login()
+                ret = json.dumps({'ok': usr.as_json()})
+                app.logger.info(f'Account for \'{usr.name}\' created')
+            except IntegrityError: 
+                ret = json.dumps({'err': 'duplicate username'})
+                app.logger.info(f'Session for \'{usr.name}\' validated')
+            except InvalidRequestError:
+                ret = json.dumps({'err': 'duplicate username'})
+                app.logger.info(f'Session for \'{usr.name}\' validated')
+
         except KeyError:
             ret = json.dumps({'err':
                               "expected fields name and pass to be set"})
