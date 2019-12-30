@@ -3,6 +3,9 @@
 echo "This script is meant to be used from" \
      "the project's toplevel dir"
 
+# Just in case, create the directory
+mkdir -p priv
+
 # Genereate a 4096 bits RSA key
 openssl genrsa \
     -out priv/smartroom_priv.pem 4096
