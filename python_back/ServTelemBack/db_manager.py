@@ -14,6 +14,9 @@ global_session = sessionmaker(bind=global_engine)()
 
 
 class User(Base):
+    """
+    Represents the users column called account in the database
+    """
     __tablename__ = "account"
 
     user_id = Column('id', Integer, primary_key=True, )
@@ -28,6 +31,10 @@ class User(Base):
 
 
 class DBManager():
+    """
+    The object used to interact with the database. Every single instance
+    of this class will refer to the same connection.
+    """
     engine: Engine = None
     session: Session = None
 
@@ -36,10 +43,22 @@ class DBManager():
         self.session = global_session
 
     def get_user(self, user: str) -> Tuple[str, str]:
+        """
+        Given a username it returns its associated login information.
+        :param user: The username
+        :return: A tuple with password (hash, salt)
+        """
         res = self.session.query(User).filter(User.username == user).one()
         return (res.passhash, res.passsalt)
 
     def create_user(self, user: str, password: str, salt: bytes):
+        """
+        Creates a user in the database, if the user exists it will throw
+        a IntegrityError or a InvalidRequestError.
+        :param user: The username
+        :param password: The plaintext password to be hashed
+        :param salt: The salt to use in the hash
+        """
         passhash: str = argon2.using(rounds=8, salt=salt).hash(password)
         user = User(user, passhash, b64encode(salt).decode('utf-8'))
         self.session.add(user)

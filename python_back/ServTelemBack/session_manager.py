@@ -1,15 +1,17 @@
 from authlib.jose import jwt
-from authlib.jose.errors import BadSignatureError, InvalidClaimError, MissingClaimError
+from authlib.jose.errors import (BadSignatureError, InvalidClaimError,
+                                 MissingClaimError)
 from datetime import datetime
 from calendar import timegm
 from redis import Redis
 
 global_store = Redis()
 
+
 class SessionManager:
     priv_key: str = ''
     pub_key: str = ''
-    store: Redis = None
+    store: Redis
 
     def __init__(self):
         with open('smartroom_priv.pem') as cert:

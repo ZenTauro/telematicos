@@ -4,7 +4,7 @@ from os import environ
 
 class ConfigObj:
     options: ConfigParser = ConfigParser()
-    db_addr: str = None
+    db_addr: str
 
     def __init__(self):
         self.options.read('priv/config.cfg')
@@ -52,7 +52,6 @@ class ConfigObj:
                 db_port = self.options['database']['db_port']
 
         self.db_addr = f'postgresql://{login}@{db_addr}:{db_port}/{db_name}'
-
 
 
 CONFIG = ConfigObj()

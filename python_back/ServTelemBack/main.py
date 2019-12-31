@@ -85,7 +85,7 @@ def sign_up():
                 usr.login()
                 ret = json.dumps({'ok': usr.as_json()})
                 app.logger.info(f'Account for \'{usr.name}\' created')
-            except IntegrityError: 
+            except IntegrityError:
                 ret = json.dumps({'err': 'duplicate username'})
                 app.logger.info(f'Session for \'{usr.name}\' validated')
             except InvalidRequestError:
