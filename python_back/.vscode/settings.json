@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "/home/zentauro/Programs/virtualenvs/test/bin/python"
+    "python.pythonPath": "/home/zentauro/Programs/virtualenvs/test/bin/python",
+    "python.linting.mypyEnabled": true,
 }

@@ -43,7 +43,7 @@ class User():
         login token if so.
         :return: Whether it succeeded or not
         """
-        (db_user_hash, salt) = self.db_manager.get_user(self.name)
+        (db_user_hash, _) = self.db_manager.get_user(self.name)
         is_equal = argon2.verify(self.password, db_user_hash)
         if is_equal:
             self.token = self.session_mgr.generate(self.name,
