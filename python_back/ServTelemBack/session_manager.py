@@ -27,7 +27,8 @@ class SessionManager:
         """
         header = {'alg': 'RS512'}
         body = {'iss': 'SmartRoom', 'sub': 'session', 'sid': ssid, 'exp': exp}
-        self.store.set(ssid, user_name, ex=exp)
+        ttl = exp - timegm(datetime.now()).utctimetuple()
+        self.store.set(ssid, user_name, ex=ttl)
         s = jwt.encode(header, body, self.priv_key)
         return s
 
