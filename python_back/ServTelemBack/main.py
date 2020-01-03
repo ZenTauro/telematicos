@@ -1,6 +1,7 @@
 from ServTelemBack import user
 
 from sqlalchemy.exc import IntegrityError, InvalidRequestError
+from sqlalchemy.orm.exc import NoResultFound
 from flask import Flask, escape, request
 import json
 
@@ -8,7 +9,7 @@ app = Flask(__name__)
 
 @app.route('/api/user/login', methods=['POST'])
 def login():
-    ret = json.dumps({'err': "JSON was expected"})
+    ret = json.dumps({'err': "JSON was expected"}), 400
     login_obj = request.get_json()
     if login_obj is not None:
         usr = user.User()
@@ -19,11 +20,13 @@ def login():
                 ret = json.dumps({'ok': usr.as_json()})
                 app.logger.info(f'User \'{usr.name}\' logged in successfully')
             else:
-                ret = json.dumps({'err': "invalid credentials"})
+                ret = json.dumps({'err': "invalid credentials"}), 401
                 app.logger.info(f'User \'{usr.name}\' failed to log in')
         except KeyError:
             ret = json.dumps({'err':
-                              "expected fields name and pass to be set"})
+                              "expected fields name and pass to be set"}), 400
+        except NoResultFound:
+            ret = json.dumps({'err': 'invalid credentials'}), 401
 
     return ret
 

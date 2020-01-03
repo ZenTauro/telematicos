@@ -20,21 +20,22 @@ class SessionManager:
             self.pub_key = cert.read()
         self.store = global_store
 
-    def generate(self, user_name: str, ssid: int, exp: datetime) -> str:
+    def generate(self, user_name: str, ssid: str, exp: int) -> bytes:
         """
         Generates JWS RS512 signed session token
+        :param user_name: The username
         :param ssid: The session id number
-        :param exp: The expiration date
+        :param exp: The expiration date Unix epoch
         :return: The token
         """
         header = {'alg': 'RS512'}
         body = {'iss': 'SmartRoom', 'sub': 'session', 'sid': ssid, 'exp': exp}
-        ttl = exp - timegm(datetime.now()).utctimetuple()
+        ttl = exp - timegm(datetime.now().utctimetuple())
         self.store.set(ssid, user_name, ex=ttl)
         s = jwt.encode(header, body, self.priv_key)
         return s
 
-    def revoke(self, token: str):
+    def revoke(self, token: bytes):
         """
         Revokes a token elimintating it from the
         session store
@@ -43,7 +44,7 @@ class SessionManager:
         decoded = jwt.decode(token, self.pub_key)
         self.store.delete(decoded.get('sid'))
 
-    def validate(self, token: str) -> bool:
+    def validate(self, token: bytes) -> bool:
         """
         Validates the given token, checking the date
         :param token: The token to be validated
