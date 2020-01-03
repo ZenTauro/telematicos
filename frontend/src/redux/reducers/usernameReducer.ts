@@ -6,7 +6,7 @@ export default
 function username(state: string = init_name, action: Action): string {
     switch (action.type) {
         case ActionTypes.UPDATE_USER:
-            console.log(`Dispatching action UPDATE_USER ${username} => ${action.payload}`);
+            console.log(`Dispatching action UPDATE_USER ${state} => ${action.payload}`);
             return action.payload;
         default:
             return state;

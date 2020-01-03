@@ -5,6 +5,9 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { IStoreState } from '../redux/Store';
 import { updateUser } from '../redux/Actions';
+import docCookies from "../utils/cookie";
+
+const MAIL_REGEXP = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const Form = styled.form`
     margin: 0;
@@ -51,13 +54,35 @@ class User extends React.Component<IUserProps, IUserState> {
     handleSubmit(e: React.FormEvent<HTMLFormElement>): void {
         e.preventDefault();
 
-        const values = [ 'name', 'password', 'mail' ]
-            .map((val, _) => ({key: val, value: document.getElementById(val) as unknown as {value: string}}));
-        
-        if ( values[1].value.value !== 'qwerty123') return;
+        let obj: {name: string, password: string, mail: string} = {} as any;
+        [ 'name', 'password', 'mail' ].map((val, i, arr) => {
+            (obj as any)[arr[i]] = (document.getElementById(val) as unknown as {value: string}).value;
+            return obj;
+        });
 
-        localStorage.name = values[0].value.value;
-        this.props.dispatch(updateUser(values[0].value.value));
+        let init = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: obj.name,
+                pass: obj.password,
+            }),
+        };
+        let req = new Request('/api/user/login', init);
+
+        fetch(req)
+        .then(response => response.json())
+        .then((data) => {
+            console.log(data);
+            if (data['ok'] == null) {}
+            else {
+                docCookies.setItem('Authorization', data.ok.token);
+                localStorage.name = obj.name;
+                this.props.dispatch(updateUser(obj.name));
+            }
+        });
     }
 
     handleChange(): void {
@@ -65,9 +90,7 @@ class User extends React.Component<IUserProps, IUserState> {
             .map((val, _) => ({key: val, value: document.getElementById(val) as unknown as {value: string}}));
 
         if ( values[0].value.value
-            .match(
-                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-            )
+            .match(MAIL_REGEXP)
         ) {
             this.setState({ isValidMail: true });
         } else {
