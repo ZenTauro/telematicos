@@ -27,6 +27,7 @@ setup(
         'Authlib',
         'psycopg2',
         'sqlalchemy-migrate',
+        'flask-socketio',
         'passlib',
         'argon2-cffi',
         'ipython==7.11.0',
