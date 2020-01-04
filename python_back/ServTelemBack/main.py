@@ -1,11 +1,14 @@
 import json
 
 from flask import Flask, escape, make_response, request
+from flask_socketio import SocketIO, emit
 from ServTelemBack import user
 from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from sqlalchemy.orm.exc import NoResultFound
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret'
+socketio = SocketIO(app)
 
 
 @app.route('/api/user/login', methods=['POST'])
@@ -122,3 +125,9 @@ def get_sensors():
         ret = make_response('Invalid credentials'), 401
 
     return ret
+
+
+@socketio.on('connect')
+def socket_connect():
+    app.logger.info('New socket conexion')
+    emit('update')

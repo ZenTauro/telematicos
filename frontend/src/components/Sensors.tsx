@@ -1,19 +1,15 @@
 import React from 'react';
 import Card from './Card';
-
-interface ISensState {
-    temp:     number;
-    humid:    number;
-    noise:    number;
-    bright:   number;
-    movement: boolean;
-    color:    string;
-}
+import { SocketService, ISensors } from '../socket';
 
 export default
-class Sensors extends React.Component<{}, ISensState> {
+class Sensors extends React.Component<{}, ISensors> {
+    private socket: SocketService;
+
     constructor(props: {}) {
         super(props);
+
+        this.socket = new SocketService();
 
         this.state = {
             temp:     0,
@@ -23,6 +19,19 @@ class Sensors extends React.Component<{}, ISensState> {
             movement: false,
             color:    '#000000',
         }
+    }
+
+    componentDidMount() { 
+        this.socket.init();
+
+        const observable = this.socket.onMessage();
+        observable.subscribe((state: ISensors) => {
+            this.setState(state);
+        });
+    }
+
+    componentWillUnmount() {
+        this.socket.disconnect();
     }
 
     render() {

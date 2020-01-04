@@ -30,9 +30,11 @@ setup(
         'flask-socketio',
         'passlib',
         'argon2-cffi',
-        'ipython==7.11.0',
-        'ipdb==0.12.3',
+        'ipython',
+        'ipdb',
         'mysql-connector',
         'sqlalchemy',
+        'eventlet',
+        'uwsgi',
     ]
 )
