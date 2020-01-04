@@ -1,13 +1,13 @@
-from ServTelemBack.session_manager import SessionManager
-from ServTelemBack.db_manager import DBManager
-
-from typing import Dict
-from passlib.hash import argon2
 from base64 import b64decode
-from datetime import datetime, timedelta
 from calendar import timegm
-from uuid import uuid4
+from datetime import datetime, timedelta
 from os import urandom
+from typing import Dict
+from uuid import uuid4
+
+from passlib.hash import argon2
+from ServTelemBack.db_manager import DBManager
+from ServTelemBack.session_manager import SessionManager
 
 
 class User():
@@ -72,4 +72,4 @@ class User():
         """
         Checks token's validity
         """
-        return self.session_mgr.validate(self.token)
+        return self.token is not None and self.session_mgr.validate(self.token)

@@ -1,11 +1,12 @@
-from ServTelemBack import user
-
-from sqlalchemy.exc import IntegrityError, InvalidRequestError
-from sqlalchemy.orm.exc import NoResultFound
-from flask import Flask, escape, request
 import json
 
+from flask import Flask, escape, make_response, request
+from ServTelemBack import user
+from sqlalchemy.exc import IntegrityError, InvalidRequestError
+from sqlalchemy.orm.exc import NoResultFound
+
 app = Flask(__name__)
+
 
 @app.route('/api/user/login', methods=['POST'])
 def login():
@@ -17,7 +18,8 @@ def login():
             usr.name = login_obj["name"]
             usr.password = login_obj["pass"]
             if usr.login():
-                ret = json.dumps({'ok': usr.as_json()})
+                ret = make_response(json.dumps({'ok': usr.as_json()}))
+                ret.set_cookie('Auth', usr.token, max_age=60*60*24, httponly=True)
                 app.logger.info(f'User \'{usr.name}\' logged in successfully')
             else:
                 ret = json.dumps({'err': "invalid credentials"}), 401
@@ -76,7 +78,7 @@ def validate():
 
 @app.route('/api/user/signup', methods=['POST'])
 def sign_up():
-    ret = json.dumps({'err': "JSON was expected"})
+    ret = make_response(json.dumps({'err': "JSON was expected"}))
     login_obj = request.get_json()
     if login_obj is not None:
         usr = user.User()
@@ -86,7 +88,8 @@ def sign_up():
             try:
                 usr.signup()
                 usr.login()
-                ret = json.dumps({'ok': usr.as_json()})
+                ret = make_response(json.dumps({'ok': usr.as_json()}))
+                ret.set_cookie('Auth', usr.token, max_age=60*60*24)
                 app.logger.info(f'Account for \'{usr.name}\' created')
             except IntegrityError:
                 ret = json.dumps({'err': 'duplicate username'})
@@ -102,13 +105,20 @@ def sign_up():
     return ret
 
 
-@app.route('/api/sensors/get')
+@app.route('/api/sensors/', methods=['GET', 'PUT'])
 def get_sensors():
-    name = request.args.get("name", "World")
-    return f'Hello, {escape(name)}!'
+    ret = ''
+    usr = user.User()
+    try:
+        usr.token = request.cookies.get('Auth')
+        if usr.is_valid():
+            if request.method == 'GET':
+                ret = 'GET'
+            elif request.method == 'PUT':
+                ret = 'PUT'
+        else:
+            ret = make_response('Invalid credentials'), 401
+    except:
+        ret = make_response('Invalid credentials'), 401
 
-
-@app.route('/api/sensors/update')
-def update_sensors():
-    name = request.args.get("name", "World")
-    return f'Hello, {escape(name)}!'
+    return ret
