@@ -34,7 +34,7 @@ setup(
         'ipdb',
         'mysql-connector',
         'sqlalchemy',
-        'eventlet',
+        'gevent',
         'uwsgi',
     ]
 )

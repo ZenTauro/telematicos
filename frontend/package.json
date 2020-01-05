@@ -32,7 +32,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "postbuild": "react-snap"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -50,6 +51,7 @@
     ]
   },
   "devDependencies": {
+    "react-snap": "^1.23.0",
     "tslint": "^5.20.0"
   }
 }

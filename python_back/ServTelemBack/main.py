@@ -131,3 +131,7 @@ def get_sensors():
 def socket_connect():
     app.logger.info('New socket conexion')
     emit('update')
+
+
+if __name__ == '__main__':
+    socketio.run(app)

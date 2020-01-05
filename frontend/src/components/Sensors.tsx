@@ -26,6 +26,7 @@ class Sensors extends React.Component<{}, ISensors> {
 
         const observable = this.socket.onMessage();
         observable.subscribe((state: ISensors) => {
+            console.log('Update received');
             this.setState(state);
         });
     }
