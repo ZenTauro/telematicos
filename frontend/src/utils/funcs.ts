@@ -1,3 +1,8 @@
+export function as_mapscoord(x: number, y: number): string {
+    const coord = `https://www.google.com/maps/@${x},${y},14z`;
+    return coord;
+}
+
 export function zip<T>(obj1: T[], obj2: T[]) {
     return obj1.map( (val, idx) => ( [val, obj2[idx]] ) )
 }

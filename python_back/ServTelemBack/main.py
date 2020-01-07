@@ -1,12 +1,15 @@
 import json
+from logging import DEBUG
 
 from flask import Flask, escape, make_response, request
 from flask_socketio import SocketIO, emit
-from ServTelemBack import user
+from gevent import sleep, spawn
+from ServTelemBack import sensor, user
 from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from sqlalchemy.orm.exc import NoResultFound
 
 app = Flask(__name__)
+app.logger.setLevel(DEBUG)
 app.config['SECRET_KEY'] = 'secret'
 socketio = SocketIO(app)
 
@@ -130,8 +133,24 @@ def get_sensors():
 @socketio.on('connect')
 def socket_connect():
     app.logger.info('New socket conexion')
-    emit('update')
+    emit('message', json.dumps(sensor.get_sensors()), broadcast=True)
+    app.logger.info('sensor update')
+
+
+def sensor_update_loop(emit, logger):
+    loop(lambda: (
+        socketio.emit('message',
+                      json.dumps(sensor.get_sensors()),
+                      broadcast=True),
+        logger('sensor update'),
+        sleep(1)))
+
+
+def loop(x):
+    while True:
+        x()
 
 
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio.run(app, debug=True)
+    socketio.start_background_task(sensor_update_loop, print)

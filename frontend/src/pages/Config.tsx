@@ -3,7 +3,7 @@ import Container from '../components/Container';
 import Card from '../components/Card';
 import styled from 'styled-components';
 import { countries } from '../utils/countries';
-import { cap1, coords2maps } from '../utils/funcs';
+import { cap1, coords2maps, as_mapscoord } from '../utils/funcs';
 import $ from "jquery";
 import { updateUser } from '../redux/Actions';
 
@@ -90,7 +90,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
         const isCountry = !countries.includes(country);
         const coords = coords2maps( ids[3].element.value );
 
-        ids[3].element.value = `https://www.google.com/maps/@${coords.latitude},${coords.longitude},14z`;
+        ids[3].element.value = as_mapscoord(coords.latitude, coords.longitude);
 
         if (isCountry) { 
             window.alert(`${country} is not a valid country`);

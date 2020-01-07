@@ -20,16 +20,16 @@ class SocketService {
     private socket: SocketIOClient.Socket = {} as SocketIOClient.Socket;
 
     public init(): SocketService {
-        this.socket = io('/websocket/')
+        this.socket = io('/')
         return this;
     }
 
     public send(action: Action): void {
-        this.socket.emit('action', action);
+        this.socket.emit('message', action);
     }
 
-    public onMessage(): Observable<ISensors> {
-        return fromEvent(this.socket, 'update');
+    public onMessage(): Observable<string> {
+        return fromEvent(this.socket, 'message');
     }
 
     public disconnect(): void {

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Card from '../components/Card';
-import { cap1, zip } from '../utils/funcs';
+import { cap1, zip, as_mapscoord } from '../utils/funcs';
 
 const room_image = require("../assets/room.jpg");
 
@@ -61,7 +61,7 @@ class Main extends React.Component<IRoomProps, IRoomState> {
 
         const lcl = localStorage.getItem('coords');
         const localization = (lcl === null || lcl === '') ?
-            "41.51, -3.34" :
+            as_mapscoord(41.51, -3.34) :
             lcl as unknown as string;
 
         const lnk = localStorage.getItem('link');
