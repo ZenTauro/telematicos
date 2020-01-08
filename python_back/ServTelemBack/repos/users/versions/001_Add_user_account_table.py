@@ -1,5 +1,4 @@
 from sqlalchemy import String, Table, Column, MetaData, Integer
-# from migrate import
 
 meta = MetaData()
 
