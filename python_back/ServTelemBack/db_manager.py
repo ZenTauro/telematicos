@@ -1,33 +1,15 @@
-from ServTelemBack.app_cfg import CONFIG
-
-from typing import Tuple
 from base64 import b64encode
-from passlib.hash import argon2
-from sqlalchemy import create_engine, String, Column, Integer
-from sqlalchemy.orm import Session, sessionmaker
-from sqlalchemy.engine import Engine
-from sqlalchemy.ext.declarative import declarative_base
+from typing import Tuple
 
-Base = declarative_base()
+from passlib.hash import argon2
+from ServTelemBack.app_cfg import CONFIG
+from ServTelemBack.tables.account import Account as User
+from sqlalchemy import Column, Integer, String, create_engine
+from sqlalchemy.engine import Engine
+from sqlalchemy.orm import Session, sessionmaker
+
 global_engine = create_engine(CONFIG.db_addr)
 global_session = sessionmaker(bind=global_engine)()
-
-
-class User(Base):
-    """
-    Represents the users column called account in the database
-    """
-    __tablename__ = "account"
-
-    user_id = Column('id', Integer, primary_key=True, )
-    username = Column(String, unique=True)
-    passhash = Column('hash', String)
-    passsalt = Column('salt', String)
-
-    def __init__(self, username: str, password: str, salt: str):
-        self.username = username
-        self.passhash = password
-        self.passsalt = salt
 
 
 class DBManager():

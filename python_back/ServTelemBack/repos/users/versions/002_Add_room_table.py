@@ -1,14 +1,7 @@
-from sqlalchemy import (
-    String,
-    Table,
-    Column,
-    MetaData,
-    Integer,
-    Boolean,
-    ForeignKey
-)
-from sqlalchemy.orm import relationship, backref
 from migrate.changeset.constraint import ForeignKeyConstraint
+from sqlalchemy import (Boolean, Column, ForeignKey, Integer, MetaData, String,
+                        Table)
+from sqlalchemy.orm import backref, relationship
 
 meta = MetaData()
 

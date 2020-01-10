@@ -1,18 +1,21 @@
 import json
 from logging import DEBUG
+from typing import Dict
 
 from flask import Flask, escape, make_response, request
-from flask_socketio import SocketIO, emit
-from gevent import sleep, spawn
+from flask_socketio import SocketIO, disconnect, emit
+from gevent import Greenlet, monkey, sleep, spawn
 from ServTelemBack import sensor, user
 from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from sqlalchemy.orm.exc import NoResultFound
 
+monkey.patch_all()
+
 app = Flask(__name__)
 app.logger.setLevel(DEBUG)
 app.config['SECRET_KEY'] = 'secret'
-socketio = SocketIO(app)
-
+socketio = SocketIO(app, message_queue='redis://localhost:6379')
+socket_connections: Dict[str, Greenlet] = {}
 
 @app.route('/api/user/login', methods=['POST'])
 def login():
@@ -130,27 +133,43 @@ def get_sensors():
     return ret
 
 
+@app.route('/api/leds', methods=['GET', 'POST'])
+def leds():
+    pass
+
+
 @socketio.on('connect')
 def socket_connect():
     app.logger.info('New socket conexion')
-    emit('message', json.dumps(sensor.get_sensors()), broadcast=True)
-    app.logger.info('sensor update')
+    usr = user.User()
+    usr.token = request.cookies.get('Auth')
+    if (usr.is_valid() and usr.token not in socket_connections):
+        socket_connections[usr.token] = \
+            socketio.start_background_task(sensor_update_loop,
+                                           usr,
+                                           socketio.emit,
+                                           app.logger.info)
+    else:
+        emit('message', '{"err": "Unauthorized"}')
+        disconnect()
 
 
-def sensor_update_loop(emit, logger):
-    loop(lambda: (
-        socketio.emit('message',
-                      json.dumps(sensor.get_sensors()),
-                      broadcast=True),
-        logger('sensor update'),
-        sleep(1)))
+@socketio.on('disconnect')
+def socket_disconnect():
+    app.logger.info('Disconnection')
+    usr = user.User()
+    usr.token = request.cookies.get('Auth')
+    if usr.token in socket_connections:
+        socket_connections.pop(usr.token).kill(block=False, timeout=1)
 
 
-def loop(x):
-    while True:
-        x()
+def sensor_update_loop(session: user.User, msg_emit, logger):
+    while session.is_valid():
+        msg_emit('message',
+                 json.dumps(sensor.get_sensors()))
+        logger('Update')
+        sleep(1)
 
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)
-    socketio.start_background_task(sensor_update_loop, print)
