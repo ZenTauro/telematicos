@@ -22,9 +22,11 @@ room = Table(
     Column('sensor-movement', Boolean, nullable=False),
     Column('max-temp', Integer, nullable=False),
     Column('min-temp', Integer, nullable=False),
+    Column('color', Integer, nullable=False),
 
     Column('user_id', Integer, ForeignKey('account.id'))
 )
+
 
 def upgrade(migrate_engine):
     meta.bind = migrate_engine

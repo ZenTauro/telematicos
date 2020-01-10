@@ -78,7 +78,7 @@ class User extends React.Component<IUserProps, IUserState> {
             console.log(data);
             if (data['ok'] == null) {}
             else {
-                docCookies.setItem('Authorization', data.ok.token);
+                docCookies.setItem('Auth', data.ok.token);
                 localStorage.name = obj.name;
                 this.props.dispatch(updateUser(obj.name));
             }

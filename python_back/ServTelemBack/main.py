@@ -15,6 +15,7 @@ app = Flask(__name__)
 app.logger.setLevel(DEBUG)
 app.config['SECRET_KEY'] = 'secret'
 socketio = SocketIO(app, message_queue='redis://localhost:6379')
+
 socket_connections: Dict[str, Greenlet] = {}
 
 @app.route('/api/user/login', methods=['POST'])

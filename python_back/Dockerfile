@@ -12,4 +12,4 @@ RUN \
 
 COPY . .
 
-ENTRYPOINT uwsgi --http :5000 --gevent 1000 --http-websockets --master --wsgi-file ServTelemBack/main.py --callable app -s :36837
+ENTRYPOINT uwsgi service.ini
