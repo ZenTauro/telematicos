@@ -1,8 +1,9 @@
+from calendar import timegm
+from datetime import datetime
+
 from authlib.jose import jwt
 from authlib.jose.errors import (BadSignatureError, InvalidClaimError,
                                  MissingClaimError)
-from datetime import datetime
-from calendar import timegm
 from redis import Redis
 
 global_store = Redis()
@@ -44,6 +45,10 @@ class SessionManager:
         decoded = jwt.decode(token, self.pub_key)
         self.store.delete(decoded.get('sid'))
 
+    def decode(self, token: bytes):
+        decoded = jwt.decode(token, self.pub_key)
+        return decoded
+
     def validate(self, token: bytes) -> bool:
         """
         Validates the given token, checking the date
@@ -54,24 +59,24 @@ class SessionManager:
 
         try:
             claims = jwt.decode(token, self.pub_key,
-            claims_options={
-                "iss": {
-                    "essential": True,
-                    "value": "SmartRoom"
-                },
-                "sub": {
-                    "essential": True,
-                    "value": "session"
-                },
-                "sid": {
-                    "essential": True,
-                    "validate": validate_sid
-                },
-                "exp": {
-                    "essential": True,
-                    "validate": validate_exp
-                }
-            })
+                                claims_options={
+                                    "iss": {
+                                        "essential": True,
+                                        "value": "SmartRoom"
+                                    },
+                                    "sub": {
+                                        "essential": True,
+                                        "value": "session"
+                                    },
+                                    "sid": {
+                                        "essential": True,
+                                        "validate": validate_sid
+                                    },
+                                    "exp": {
+                                        "essential": True,
+                                        "validate": validate_exp
+                                    }
+                                })
             claims.validate()
             if validate_sid(claims.get('sid')) and \
                validate_exp(claims.get('exp')):
@@ -87,6 +92,13 @@ class SessionManager:
             ret = False
 
         return ret
+
+    def find_user(self, sid: str) -> str:
+        user = self.store.get(sid)
+        if user is not None:
+            return user.decode('utf-8')
+
+        return ''
 
 
 def validate_exp(exp: int) -> bool:

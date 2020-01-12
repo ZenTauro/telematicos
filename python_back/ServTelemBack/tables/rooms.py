@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from passlib.hash import argon2
 from ServTelemBack.tables.base import Base
 from sqlalchemy import (Boolean, Column, ForeignKey, Integer, String,
@@ -26,14 +28,14 @@ class Room(Base):
     sensor_movement = Column('sensor-movement', Boolean, nullable=False)
     max_temp = Column('max-temp', Integer, nullable=False)
     min_temp = Column('min-temp', Integer, nullable=False)
-    color = Column('color', Integer, nullable=False),
+    color = Column('color', Integer, nullable=False)
     user_id = Column('user_id', Integer, ForeignKey('account.id'))
 
     def __init__(self, name: str, country: str, city: str, link: str,
                  x_coord: int, y_coord: int, photo_path: str,
                  sensor_temp: bool, sensor_humid: bool, sensor_noise: bool,
                  sensor_light: bool, sensor_movement: bool, max_temp: int,
-                 min_temp: int, color: int):
+                 min_temp: int, color: int, user_id: int):
         self.name = name
         self.country = country
         self.city = city
@@ -49,3 +51,4 @@ class Room(Base):
         self.max_temp = max_temp
         self.min_temp = min_temp
         self.color = color
+        self.user_id = user_id

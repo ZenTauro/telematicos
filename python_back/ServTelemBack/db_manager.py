@@ -1,9 +1,10 @@
 from base64 import b64encode
-from typing import Tuple
+from typing import List, Tuple
 
 from passlib.hash import argon2
 from ServTelemBack.app_cfg import CONFIG
 from ServTelemBack.tables.account import Account as User
+from ServTelemBack.tables.rooms import Room
 from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
@@ -45,3 +46,17 @@ class DBManager():
         user = User(user, passhash, b64encode(salt).decode('utf-8'))
         self.session.add(user)
         self.session.commit()
+
+    def get_user_rooms(self, user: str) -> List[Room]:
+        """
+        Gets the given user associated rooms
+        :param user: The user to lookup rooms for
+        :return: The rooms
+        """
+        alyyy = self.session.query(User)\
+                            .filter(User.username == 'alyyy')\
+                            .one()
+        rooms = self.session.query(Room)\
+                            .filter(Room.user_id == alyyy.user_id)\
+                            .all()
+        return rooms

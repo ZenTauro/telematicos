@@ -72,4 +72,12 @@ class User():
         """
         Checks token's validity
         """
-        return self.token is not None and self.session_mgr.validate(self.token)
+        ret = self.token is not None and self.session_mgr.validate(self.token)
+        if ret:
+            dec_token = self.session_mgr.decode(self.token)
+            self.name = self.session_mgr.find_user(dec_token['sid'])
+        return ret
+
+    def get_rooms(self):
+        rooms = self.db_manager.get_user_rooms(self.name)
+        return rooms

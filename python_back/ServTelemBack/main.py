@@ -136,7 +136,26 @@ def get_sensors():
 
 @app.route('/api/leds', methods=['GET', 'POST'])
 def leds():
-    pass
+    ret = ''
+    usr = user.User()
+    usr.token = ''
+    app.logger.info('Attempting led fetch')
+    try:
+        usr.token = request.cookies.get('Auth')
+        if usr.is_valid():
+            if request.method == 'GET':
+                app.logger.info(f'Fetching rooms for {usr.name}')
+                rooms = usr.get_rooms()
+                ret = make_response(json.dumps({"ok": rooms[0].color})), 200
+            elif request.method == 'PUT':
+                ret = 'PUT'
+        else:
+            ret = make_response('Invalid credentials'), 401
+    except KeyError:
+        pass
+
+    return ret
+
 
 
 @socketio.on('connect')

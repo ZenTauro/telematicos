@@ -1,6 +1,7 @@
 import React from 'react';
 import Card from './Card';
 import { SocketService, ISensors } from '../socket';
+import { int_to_hex } from '../utils/funcs';
 
 export default
 class Sensors extends React.Component<{}, ISensors> {
@@ -23,6 +24,10 @@ class Sensors extends React.Component<{}, ISensors> {
 
     componentDidMount() { 
         this.socket.init();
+
+        fetch('/api/leds')
+            .then(res => res.json())
+            .then(json => this.setState({color: `#${int_to_hex(json['ok'])}`}))
 
         const observable = this.socket.onMessage();
         observable.subscribe((state: string) => {

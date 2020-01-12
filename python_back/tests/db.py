@@ -1,5 +1,6 @@
-from ServTelemBack.db_manager import DBManager, User
 from ipdb import set_trace
+from ServTelemBack.db_manager import DBManager, User
+from ServTelemBack.tables.rooms import Room
 
 db = DBManager()
 
@@ -15,7 +16,38 @@ db = DBManager()
 
 # users = db.session.query(User).all()
 # for user in users:
-    # print(user.username)
+# print(user.username)
 
-(hashv, saltv) = db.get_user("juan")
+# room1 = Room(
+#     "Casa",
+#     "Espana",
+#     "Madrid",
+#     "localhost",
+#     40,
+#     50,
+#     "/tmp/photo.png",
+#     True,
+#     True,
+#     True,
+#     True,
+#     True,
+#     30,
+#     18,
+#     348,
+#     26,
+# )
+# db.session.add(room1)
+# db.session.commit()
+alyyy = db.session.query(User).filter(User.username == 'alyyy').one()
+rooms = db.session.query(Room).filter(Room.user_id == alyyy.user_id).all()
+
+alyyy_rooms = db.session.query(User.user_id, Room)\
+                        .outerjoin(Room, Room.user_id == User.user_id)\
+                        .filter(User.username == 'alyyy')\
+                        .all()
+
+# for room in alyyy_rooms:
+#     print(room.name)
+
+# (hashv, saltv) = db.get_user("juan")
 set_trace()
