@@ -150,7 +150,7 @@ def leds():
             elif request.method == 'PUT':
                 ret = 'PUT'
         else:
-            ret = make_response('Invalid credentials'), 401
+            ret = make_response('{"err": "Invalid credentials"}'), 401
     except KeyError:
         pass
 
@@ -160,11 +160,11 @@ def leds():
 
 @socketio.on('connect')
 def socket_connect():
-    app.logger.info('New socket conexion')
+    app.logger.info(f'New socket conexion {request.sid}')
     usr = user.User()
     usr.token = request.cookies.get('Auth')
-    if (usr.is_valid() and usr.token not in socket_connections):
-        socket_connections[usr.token] = \
+    if (usr.is_valid() and request.sid not in socket_connections):
+        socket_connections[request.sid] = \
             socketio.start_background_task(sensor_update_loop,
                                            usr,
                                            socketio.emit,
@@ -172,15 +172,16 @@ def socket_connect():
     else:
         emit('message', '{"err": "Unauthorized"}')
         disconnect()
+        return False
 
 
 @socketio.on('disconnect')
 def socket_disconnect():
-    app.logger.info('Disconnection')
+    app.logger.info(f'Disconnection of {request.sid}')
     usr = user.User()
     usr.token = request.cookies.get('Auth')
-    if usr.token in socket_connections:
-        socket_connections.pop(usr.token).kill(block=False, timeout=1)
+    if request.sid in socket_connections:
+        socket_connections.pop(request.sid).kill(block=False, timeout=1)
 
 
 def sensor_update_loop(session: user.User, msg_emit, logger):

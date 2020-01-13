@@ -32,6 +32,10 @@ class SocketService {
         return fromEvent(this.socket, 'message');
     }
 
+    public onDisconnect(): Observable<string> {
+        return fromEvent(this.socket, 'disconnect');
+    }
+
     public disconnect(): void {
         this.socket.disconnect();
     }

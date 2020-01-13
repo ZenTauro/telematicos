@@ -22,18 +22,37 @@ class Sensors extends React.Component<{}, ISensors> {
         }
     }
 
-    componentDidMount() { 
+    componentDidMount() {
         this.socket.init();
 
         fetch('/api/leds')
-            .then(res => res.json())
-            .then(json => this.setState({color: `#${int_to_hex(json['ok'])}`}))
+            .then(res => {
+                let r;
+                try {
+                    r = res.json();
+                } catch(error) {
+                    console.log(error);
+                }
+                return r;
+            })
+            .catch(e => console.log(`Malformed JSON received ${e}`))
+            .then(json => {
+                try {
+                    this.setState({color: `#${int_to_hex(json['ok'])}`});
+                } catch(error) {
+                    console.log(json);
+                }
+            })
 
         const observable = this.socket.onMessage();
         observable.subscribe((state: string) => {
             console.log(`Update received ${state}`);
             this.setState(JSON.parse(state));
         });
+
+        this.socket.onDisconnect().subscribe((state: string) => {
+            console.log('The server disconnected us');
+        })
     }
 
     componentWillUnmount() {
@@ -44,7 +63,7 @@ class Sensors extends React.Component<{}, ISensors> {
         return (
             <Card>{{
                 header: "Datos sensores",
-                rest: 
+                rest:
                     <table>
                         <tbody>
                         <tr>
