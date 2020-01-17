@@ -71,7 +71,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
 
     handleSubmit(e: React.FormEvent<HTMLFormElement>): void {
         e.preventDefault();
-        
+
         const ids: { id: string, element: {value: string} }[]  = [
             'country',
             'password',
@@ -92,7 +92,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
 
         ids[3].element.value = as_mapscoord(coords.latitude, coords.longitude);
 
-        if (isCountry) { 
+        if (isCountry) {
             window.alert(`${country} is not a valid country`);
             console.log(`${country} is not a valid country`);
             e.preventDefault();
@@ -116,7 +116,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
         ));
 
         updateUser(localStorage.getItem['name']);
-        
+
         e.preventDefault();
     }
 
@@ -169,7 +169,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
         const room_data: JSX.Element[] = [
             { displayName: 'Coordenadas', formName: 'coords'  },
             { displayName: 'Link',        formName: 'link'    },
-        ].map((val, _) => ( 
+        ].map((val, _) => (
             <tr key={val.formName}><td>{val.displayName}</td><td><input type="text" id={val.formName} /></td></tr>
         ));
         room_data.push(
@@ -194,7 +194,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
             { displayName: 'Nivel de sonido', formName: 'isSoundActive'    },
             { displayName: 'Nivel de luz',    formName: 'isLightActive'    },
             { displayName: 'Movimiento',      formName: 'isMovementActive' },
-        ].map((val, _) => ( 
+        ].map((val, _) => (
             <tr key={val.formName}><td>{val.displayName}</td><td><input type="checkbox" id={val.formName} /></td></tr>
         ));
 
@@ -203,7 +203,7 @@ class Config extends React.Component<IConfigProps, IConfigState> {
               func: () => this.state.isMaxOk ? 'none' : '#F88379' },
             { displayName: 'Temperatura minima', formName: 'minTemp', min: -10, max: 40,
               func: () => this.state.isMinOk ? 'none' : '#F88379' },
-        ].map((val, _) => ( 
+        ].map((val, _) => (
             <tr key={val.formName}>
                 <td>{val.displayName}</td>
                 <td>

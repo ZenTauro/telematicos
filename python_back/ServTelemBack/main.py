@@ -204,4 +204,4 @@ def sensor_update_loop(session: user.User, msg_emit, logger):
 
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app)
