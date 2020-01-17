@@ -60,3 +60,6 @@ class DBManager():
                             .filter(Room.user_id == alyyy.user_id)\
                             .all()
         return rooms
+
+    def commit(self):
+        self.session.commit()

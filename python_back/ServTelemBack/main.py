@@ -18,6 +18,7 @@ socketio = SocketIO(app, message_queue='redis://localhost:6379')
 
 socket_connections: Dict[str, Greenlet] = {}
 
+
 @app.route('/api/user/login', methods=['POST'])
 def login():
     ret = json.dumps({'err': "JSON was expected"}), 400
@@ -86,6 +87,7 @@ def validate():
 
     return ret
 
+
 @app.route('/api/user/signup', methods=['POST'])
 def sign_up():
     ret = make_response(json.dumps({'err': "JSON was expected"}))
@@ -147,15 +149,24 @@ def leds():
                 app.logger.info(f'Fetching rooms for {usr.name}')
                 rooms = usr.get_rooms()
                 ret = make_response(json.dumps({"ok": rooms[0].color})), 200
-            elif request.method == 'PUT':
-                ret = 'PUT'
+            elif request.method == 'POST':
+                try:
+                    login_obj = request.get_json()
+                    if login_obj is not None:
+                        rooms = usr.get_rooms()
+                        usr.set_room(0, login_obj['color'])
+                        app.logger.info(f'Setting rooms for {usr.name}')
+                        ret = make_response(json.dumps({"ok": rooms[0].color})), 200
+                    else:
+                        ret = make_response('{"err": "JSON was expected"}'), 400
+                except KeyError:
+                    ret = make_response('{"err": "Malformed request"}'), 400
         else:
             ret = make_response('{"err": "Invalid credentials"}'), 401
     except KeyError:
         pass
 
     return ret
-
 
 
 @socketio.on('connect')

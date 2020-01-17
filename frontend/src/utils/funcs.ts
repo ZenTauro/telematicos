@@ -50,10 +50,7 @@ export function isMail(addr: string): boolean {
 }
 
 export function int_to_hex(i: number): string {
-    let hex = ((i>>24)&0xFF).toString(16) +
-              ((i>>16)&0xFF).toString(16) +
-              ((i>>8)&0xFF).toString(16) +
-              (i&0xFF).toString(16);
-    hex += '000000';
-    return hex.substring(0, 6);
+    const hex = i.toString(16)
+        .padStart(6, '0');
+    return hex
 }

@@ -11,6 +11,7 @@ class Sensors extends React.Component<{}, ISensors> {
         super(props);
 
         this.socket = new SocketService();
+        this.handleSubmit = this.handleSubmit.bind(this);
 
         this.state = {
             temp:     0,
@@ -42,7 +43,7 @@ class Sensors extends React.Component<{}, ISensors> {
                 } catch(error) {
                     console.log(json);
                 }
-            })
+            });
 
         const observable = this.socket.onMessage();
         observable.subscribe((state: string) => {
@@ -52,11 +53,48 @@ class Sensors extends React.Component<{}, ISensors> {
 
         this.socket.onDisconnect().subscribe((state: string) => {
             console.log('The server disconnected us');
-        })
+        });
     }
 
     componentWillUnmount() {
         this.socket.disconnect();
+    }
+
+    handleSubmit(e: React.FormEvent<HTMLFormElement>): void {
+        e.preventDefault();
+        const data = new FormData(e.target as any);
+        const col = data.get('color');
+        const color = col as unknown as string;
+        const body = {
+            color: parseInt(color.slice(1), 16)
+        };
+
+        console.log(`data: ${JSON.stringify(body)}`);
+
+        fetch('/api/leds', {
+            method: 'POST',
+            headers:{
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(body),
+        }).then(res => {
+            let r;
+            try {
+                r = res.json();
+            } catch(error) {
+                console.log(error);
+            }
+            return r;
+        })
+          .catch(e => console.log(`Malformed JSON received ${e}`))
+          .then(json => {
+              try {
+                  console.log(`Color to be set: ${color}`)
+                  this.setState({color: color});
+              } catch(error) {
+                  console.log(json);
+              }
+          }) ;
     }
 
     render() {
@@ -64,6 +102,7 @@ class Sensors extends React.Component<{}, ISensors> {
             <Card>{{
                 header: "Datos sensores",
                 rest:
+                <form onSubmit={this.handleSubmit}>
                     <table>
                         <tbody>
                         <tr>
@@ -90,8 +129,13 @@ class Sensors extends React.Component<{}, ISensors> {
                             <td>Color Iluminacion</td>
                             <td>{this.state.color}</td>
                         </tr>
+                        <tr>
+                            <td><input name="color" type="color" /></td>
+                            <td><input name="submit" type="submit" value="submit"/></td>
+                        </tr>
                         </tbody>
                     </table>
+                </form>
             }}</Card>
         )
     }

@@ -81,3 +81,8 @@ class User():
     def get_rooms(self):
         rooms = self.db_manager.get_user_rooms(self.name)
         return rooms
+
+    def set_room(self, idx: int, color: int):
+        room = self.db_manager.get_user_rooms(self.name)[idx]
+        room.color = color
+        self.db_manager.commit()
